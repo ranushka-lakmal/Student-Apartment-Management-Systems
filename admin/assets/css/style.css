@@ -2231,3 +2231,96 @@ label {
 }
 
 
+
+<style>
+        .info-box {
+            color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .blue-bg {
+            background: #3498db;
+        } 
+        
+        .header-bg {
+            background: #36454F;
+        }
+
+        /* You should create additional classes for different colors as shown in the image */
+
+        .count {
+            display: block;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .title {
+            font-size: 16px;
+        }
+
+        #wrapper {
+            padding: 20px;
+        }
+
+        .info-box {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            color: #fff;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .orange-bg {
+            background: #FFC300;
+            box-shadow: 0 8px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .blue-bg {
+            background: #3498db;
+            box-shadow: 0 8px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .info-box .fa {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        .info-box .count {
+            display: block;
+            font-size: 30px;
+            font-weight: 600;
+        }
+
+        .info-box .title {
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        .info-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(52, 152, 219, 0.5);
+        }
+
+        /* Add more color styles for other info-boxes */
+
+        /* Responsive tweaks */
+        @media (max-width: 768px) {
+            .info-box {
+                margin-bottom: 10px;
+            }
+
+            .info-box .fa {
+                font-size: 40px;
+            }
+
+            .info-box .count {
+                font-size: 24px;
+            }
+
+            .info-box .title {
+                font-size: 16px;
+            }
+        }

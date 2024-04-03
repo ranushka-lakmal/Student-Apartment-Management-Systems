@@ -10,7 +10,7 @@ $ret=mysqli_query($con,"SELECT * FROM admin WHERE username='$adminusername' and 
 $num=mysqli_fetch_array($ret);
 if($num>0)
 {
-$extra="manage-users.php";
+$extra="dashboard.php";
 $_SESSION['login']=$_POST['username'];
 $_SESSION['id']=$num['id'];
 echo "<script>window.location.href='".$extra."'</script>";
