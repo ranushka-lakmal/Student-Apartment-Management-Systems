@@ -1,0 +1,11 @@
+//users and others  
+0 = Approved
+1 = Pending
+9 = reject
+
+
+// email 
+
+0 for unread,
+1 for read,
+2 for replied.

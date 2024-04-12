@@ -30,6 +30,13 @@
             </li>
 
             <li class="sub-menu">
+                <a href="email_view.php">
+                    <i class="fa fa-envelope"></i>
+                    <span>email</span>
+                </a>
+            </li> 
+
+            <li class="sub-menu">
                 <a href="change-password.php">
                     <i class="fa fa-file"></i>
                     <span>Change Password</span>

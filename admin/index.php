@@ -74,7 +74,7 @@ exit();
 <p style="text-align: center;font-family: sans-serif;">This website is developed by
 <br>
 
-<a href="www.google.com"><b style="font-family: sans-serif;">Ranushka Lakmal</b></a>
+<a href="#"><b style="font-family: sans-serif;"></b></a>
 </p>
 
   </body>

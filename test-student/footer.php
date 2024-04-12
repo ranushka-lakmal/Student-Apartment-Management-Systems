@@ -9,8 +9,7 @@
         <h4>Information</h4>
         <ul class="row">
           <li class="col-lg-12 col-sm-12 col-xs-3"><a href="about.php">About</a></li>
-          <li class="col-lg-12 col-sm-12 col-xs-3"><a href="agents.php">Agents</a></li>
-          <li class="col-lg-12 col-sm-12 col-xs-3"><a href="blog.php">Blog</a></li>
+
           <li class="col-lg-12 col-sm-12 col-xs-3"><a href="contact.php">Contact</a></li>
         </ul>
       </div>

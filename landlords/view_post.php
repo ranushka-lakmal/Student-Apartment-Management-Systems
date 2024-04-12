@@ -10,6 +10,7 @@ if (!isset($_SESSION['login'])) {
 $landlordEmail = $_SESSION['login'];
 $properties = [];
 
+// get posts
 $query = "SELECT id, name, description, price, addr, image1 FROM properties WHERE landlord_email=?";
 if ($stmt = mysqli_prepare($con, $query)) {
     mysqli_stmt_bind_param($stmt, 's', $landlordEmail);
@@ -21,7 +22,26 @@ if ($stmt = mysqli_prepare($con, $query)) {
     }
     mysqli_stmt_close($stmt);
 }
-mysqli_close($con);
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id'])) {
+    $propertyId = $_POST['id'];
+    $landlordEmail = $_SESSION['login']; // Assuming you're using this to check ownership
+
+    // Prepare the delete query
+    $query = "DELETE FROM properties WHERE id = ? AND landlord_email = ?";
+    if ($stmt = mysqli_prepare($con, $query)) {
+        mysqli_stmt_bind_param($stmt, 'is', $propertyId, $landlordEmail);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
+
+    mysqli_close($con);
+    // Redirect back to the property listing page
+    header('Location: view_post.php');
+    exit;
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -30,166 +50,95 @@ mysqli_close($con);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View</title>
+    <title>View Properties</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
-        type="text/css">
-
-    <style>
-
-body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-    }
-
-
-        .table-container {
-        background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: max-content;
-            min-width: 100%;
-        }
-
-        table,
-        th,
-        td {
-            border: 1px solid #ddd;
-        }
-
-        th,
-        td {
-            text-align: left;
-            padding: 12px 15px;
-        }
-
-        th {
-            background-color: #007bff;
-            color: white;
-            font-weight: bold;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        tr:hover {
-        background-color: #ddd;
-    }
-
-        .edit-btn,
-        .delete-btn {
-            text-decoration: none;
-            padding: 5px 10px;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .edit-btn {
-            background-color: #007bff;
-        }
-
-        .delete-btn {
-            background-color: #dc3545;
-        }
-
-        @media (max-width: 600px) {
-
-            .edit-btn,
-            .delete-btn {
-                padding: 3px 6px;
-                font-size: 0.8rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 </head>
 
 <body>
-
     <?php include 'navbar.php'; ?>
 
-
     <div class="container mt-5">
-    <h2>My Property Listings</h2>
-    <div class="table-container">
-       
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Price</th>
-                    <th>Address</th>
-                    <th>Image</th>
-                    <th>Action</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($properties as $property): ?>
+        <h2>My Post Listings</h2>
+        <div class="table-responsive">
+            <table id="propertyTable" class="table">
+                <thead>
                     <tr>
-                        <td>
-                            <?php echo htmlspecialchars($property['id']); ?>
-                        </td>
-                        <td>
-                            <?php echo htmlspecialchars($property['name']); ?>
-                        </td>
-                        <td>
-                            <?php echo htmlspecialchars($property['description']); ?>
-                        </td>
-                        <td>$
-                            <?php echo htmlspecialchars($property['price']); ?>
-                        </td>
-                        <td>
-                            <?php echo htmlspecialchars($property['addr']); ?>
-                        </td>
-                        <td>
-                            <?php
-                            // Check if the image data is not empty
-                            if (!empty($property['image1'])) {
-                                // Convert the binary data to a base64 encoded string
-                                $imageData = base64_encode($property['image1']);
-                                // Create the data URL
-                                $src = 'data:image/jpeg;base64,' . $imageData;
-                                echo '<img src="' . $src . '" alt="Property Image" style="width: 100px; height: auto;">';
-                            } else {
-                                echo 'No image available';
-                            }
-                            ?>
-                        </td>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Address</th>
 
-                        <td>
-                            <button class="edit-btn"
-                                onclick="location.href='edit_post.php?id=<?php echo $property['id']; ?>'">Edit</button>
-                            <button class="delete-btn"
-                                onclick="location.href='delete_post.php?id=<?php echo $property['id']; ?>'">Delete</button>
-                        </td>
+                        <th>Action</th>
                     </tr>
-                <?php endforeach; ?>
-                <?php if (empty($properties)): ?>
-                    <tr>
-                        <td colspan="7">You have not listed any properties yet.</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-   
+                </thead>
+                <tbody>
+                    <?php foreach ($properties as $property): ?>
+                        <tr>
 
+                            <td>
+                                <?php if (!empty($property['image1'])): ?>
+                                    <img src="data:image/jpeg;base64,<?php echo base64_encode($property['image1']); ?>"
+                                        alt="Property Image" style="width: 100px; height: auto;">
+                                <?php else: ?>
+                                    No image available
+                                <?php endif; ?>
+                            </td>
+
+                            <td>
+                                <?php echo htmlspecialchars($property['name']); ?>
+                            </td>
+                            <td>
+                                <?php echo htmlspecialchars($property['description']); ?>
+                            </td>
+                            <td>$
+                                <?php echo htmlspecialchars($property['price']); ?>
+                            </td>
+                            <td>
+                                <?php echo htmlspecialchars($property['addr']); ?>
+                            </td>
+
+                            <td>
+                                <a href="edit_post.php?id=<?php echo $property['id']; ?>"
+                                    class="btn btn-primary btn-sm">Edit</a>
+                                <button onclick="confirmDeletion(<?php echo $property['id']; ?>);"
+                                    class="btn btn-danger btn-sm">Delete</button>
+                            </td>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#propertyTable').DataTable();
+        });
+    </script>
 
+    <script>
+        function confirmDeletion(id) {
+            if (confirm('Are you sure you want to delete this property?')) {
+                var form = document.createElement('form');
+                document.body.appendChild(form);
+                form.method = 'post';
+                form.action = 'view_post.php';
+
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'id';
+                input.value = id;
+                form.appendChild(input);
+
+                form.submit();
+            }
+        }
+    </script>
 </body>
 
 </html>

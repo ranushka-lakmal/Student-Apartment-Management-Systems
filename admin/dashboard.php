@@ -7,7 +7,7 @@ if (!isset($_SESSION['login'])) {
     exit;
 }
 
-$newPost = 0; 
+$newPost = 0;
 
 // Count pending Posts
 $query = "SELECT COUNT(*) as newPost FROM properties WHERE stat_code=1";
@@ -37,6 +37,24 @@ if ($resultApproved) {
     $approvedUser = $rowApproved['approvedUser'];
 }
 
+// Count Pending user
+$pendingUser = 0;
+$queryPending = "SELECT COUNT(*) as pendingUser FROM users WHERE stat_code=1";
+$resultPending = mysqli_query($con, $queryPending);
+if ($resultPending) {
+    $rowPending = mysqli_fetch_assoc($resultPending);
+    $pendingUser = $rowPending['pendingUser'];
+}
+
+// Count Unread Messages
+$unreadMessages = 0;
+$queryUnread = "SELECT COUNT(*) as unreadMessages FROM contact WHERE is_read = 1";
+$resultUnread = mysqli_query($con, $queryUnread);
+if ($resultUnread) {
+    $rowUnread = mysqli_fetch_assoc($resultUnread);
+    $unreadMessages = $rowUnread['unreadMessages'];
+}
+
 ?>
 
 
@@ -55,19 +73,16 @@ if ($resultApproved) {
     <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/style-responsive.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
     <style>
-        .info-box {
-            color: #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-        }
+      
 
         .blue-bg {
             background: #3498db;
-        } 
-        
+        }
+
         .header-bg {
             background: #36454F;
         }
@@ -90,9 +105,9 @@ if ($resultApproved) {
 
         .info-box {
             text-align: center;
-            padding: 20px;
+            padding: 50px;
             margin-bottom: 20px;
-            border-radius: 15px;
+            border-radius: 25px;
             color: #fff;
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
@@ -148,7 +163,6 @@ if ($resultApproved) {
                 font-size: 16px;
             }
         }
-
     </style>
 </head>
 
@@ -161,10 +175,19 @@ if ($resultApproved) {
             </div>
             <a href="#" class="logo"><b>Admin Dashboard</b></a>
             <div class="nav notify-row" id="top_menu">
-
-
+                <ul class="nav top-menu">
+                    <!-- Email Icon with Unread Messages Count -->
+                    <li id="header_inbox_bar" class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="email_view.php">
+                            <i class="fa fa-envelope"></i>
+                            <span class="badge bg-theme">
+                                <?php echo $unreadMessages; ?>
+                            </span>
+                        </a>
+                    </li>
                 </ul>
             </div>
+
             <div class="top-menu">
                 <ul class="nav pull-right top-menu">
                     <li><a class="logout" href="logout.php">Logout</a></li>
@@ -172,12 +195,12 @@ if ($resultApproved) {
             </div>
         </header>
         <?php include ('sidebar.php'); ?>
-<br>
+        <br>
         <section id="container">
             <section id="main-content">
                 <section class="wrapper">
                     <div class="row">
-                        <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="col-lg-4 col-md-8 col-sm-12">
                             <div class="info-box orange-bg">
                                 <i class="fa fa-bullhorn"></i>
                                 <div class="count">
@@ -187,28 +210,38 @@ if ($resultApproved) {
                             </div>
                         </div>
 
-                        <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="col-lg-4 col-md-8col-sm-12">
                             <div class="info-box orange-bg">
                                 <i class="fa fa-users"></i>
                                 <div class="count">
-                                <?php echo $newPost; ?>
+                                    <?php echo $pendingUser; ?>
                                 </div>
                                 <div class="title">Pending Users</div>
                             </div>
                         </div>
-                      
+
+
+                        <div class="col-lg-4 col-md-8col-sm-12">
+                            <div class="info-box orange-bg">
+                                <i class="fa fa-envelope"></i>
+                                <div class="count">
+                                    <?php echo $unreadMessages; ?>
+                                </div>
+                                <div class="title">Pending Mails</div>
+                            </div>
+                        </div>
                     </div>
 
                 </section>
             </section>
-        
+
         </section>
 
         <section id="container">
             <section id="main-content">
                 <section class="wrapper">
                     <div class="row">
-                        <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="col-lg-4 col-md-8 col-sm-12">
                             <div class="info-box blue-bg">
                                 <i class="fa fa-bullhorn"></i>
                                 <div class="count">
@@ -216,25 +249,28 @@ if ($resultApproved) {
                                 </div>
                                 <div class="title">Approved Posts</div>
                             </div>
+
+                            
                         </div>
 
-                        <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="col-lg-4 col-md-8 col-sm-12">
                             <div class="info-box blue-bg">
                                 <i class="fa fa-users"></i>
                                 <div class="count">
-                                <?php echo $approvedUser; ?>
+                                    <?php echo $approvedUser; ?>
                                 </div>
                                 <div class="title">Approved Users</div>
                             </div>
                         </div>
-                      
+
                     </div>
 
                 </section>
             </section>
-        
-        </section>
 
+        </section>
+        
+        
 
 </body>
 
